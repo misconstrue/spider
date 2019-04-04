@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>spider_view</class>
+ <widget class="QWidget" name="spider_view">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>279</width>
+    <height>500</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>279</width>
+    <height>500</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>279</width>
+    <height>500</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>猫眼电影抓取</string>
+  </property>
+  <widget class="QComboBox" name="sortclass">
+   <property name="geometry">
+    <rect>
+     <x>170</x>
+     <y>20</y>
+     <width>101</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <item>
+    <property name="text">
+     <string>排序类别</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>按照热门排序</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>按照时间排序</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>按照评价排序</string>
+    </property>
+   </item>
+  </widget>
+  <widget class="QComboBox" name="moviesclass">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>20</y>
+     <width>81</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <item>
+    <property name="text">
+     <string>电影类别</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>科幻</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>动作</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>悬疑</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>冒险</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>战争</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>奇幻</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>喜剧</string>
+    </property>
+   </item>
+  </widget>
+  <widget class="QPushButton" name="makefile">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>90</y>
+     <width>81</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>开始抓取</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="openfile">
+   <property name="geometry">
+    <rect>
+     <x>170</x>
+     <y>90</y>
+     <width>101</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>提取排序</string>
+   </property>
+  </widget>
+  <widget class="QTextBrowser" name="textBrowser">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>130</y>
+     <width>241</width>
+     <height>351</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="guessyoulike">
+   <property name="geometry">
+    <rect>
+     <x>100</x>
+     <y>50</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>猜你喜欢</string>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>makefile</sender>
+   <signal>clicked()</signal>
+   <receiver>spider_view</receiver>
+   <slot>execute()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>64</x>
+     <y>172</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>62</x>
+     <y>145</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>openfile</sender>
+   <signal>clicked()</signal>
+   <receiver>spider_view</receiver>
+   <slot>open_file()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>157</x>
+     <y>160</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>149</x>
+     <y>145</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>guessyoulike</sender>
+   <signal>clicked()</signal>
+   <receiver>spider_view</receiver>
+   <slot>findyoulike()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>145</x>
+     <y>60</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>214</x>
+     <y>58</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>execute()</slot>
+  <slot>open_file()</slot>
+  <slot>findyoulike()</slot>
+ </slots>
+</ui>

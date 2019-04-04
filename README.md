@@ -1,2 +1,2 @@
 # spider
-a simple spider programe
+a simple spider program

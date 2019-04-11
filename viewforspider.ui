@@ -28,7 +28,7 @@
   <widget class="QComboBox" name="sortclass">
    <property name="geometry">
     <rect>
-     <x>170</x>
+     <x>160</x>
      <y>20</y>
      <width>101</width>
      <height>22</height>
@@ -109,7 +109,7 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>90</y>
+     <y>50</y>
      <width>81</width>
      <height>23</height>
     </rect>
@@ -121,9 +121,9 @@
   <widget class="QPushButton" name="openfile">
    <property name="geometry">
     <rect>
-     <x>170</x>
-     <y>90</y>
-     <width>101</width>
+     <x>20</x>
+     <y>80</y>
+     <width>81</width>
      <height>23</height>
     </rect>
    </property>
@@ -137,21 +137,47 @@
      <x>20</x>
      <y>130</y>
      <width>241</width>
-     <height>351</height>
+     <height>331</height>
     </rect>
    </property>
   </widget>
   <widget class="QPushButton" name="guessyoulike">
    <property name="geometry">
     <rect>
-     <x>100</x>
-     <y>50</y>
+     <x>160</x>
+     <y>80</y>
      <width>75</width>
      <height>23</height>
     </rect>
    </property>
    <property name="text">
     <string>猜你喜欢</string>
+   </property>
+  </widget>
+  <widget class="QProgressBar" name="progressBar">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>470</y>
+     <width>241</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="value">
+    <number>0</number>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="savefile">
+   <property name="geometry">
+    <rect>
+     <x>160</x>
+     <y>50</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>保存文件</string>
    </property>
   </widget>
  </widget>
@@ -165,7 +191,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>64</x>
-     <y>172</y>
+     <y>72</y>
     </hint>
     <hint type="destinationlabel">
      <x>62</x>
@@ -180,8 +206,8 @@
    <slot>open_file()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>157</x>
-     <y>160</y>
+     <x>20</x>
+     <y>102</y>
     </hint>
     <hint type="destinationlabel">
      <x>149</x>
@@ -196,12 +222,28 @@
    <slot>findyoulike()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>145</x>
-     <y>60</y>
+     <x>205</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
      <x>214</x>
      <y>58</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>savefile</sender>
+   <signal>clicked()</signal>
+   <receiver>spider_view</receiver>
+   <slot>execute_save()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>175</x>
+     <y>58</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>129</x>
+     <y>50</y>
     </hint>
    </hints>
   </connection>
@@ -210,5 +252,6 @@
   <slot>execute()</slot>
   <slot>open_file()</slot>
   <slot>findyoulike()</slot>
+  <slot>execute_save()</slot>
  </slots>
 </ui>

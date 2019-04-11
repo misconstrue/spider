@@ -1,14 +1,13 @@
-import requests
-import sys
-import re
-
-from viewforspider import Ui_spider_view
-from collections import Counter
+import re  # 正则表达式
+import sys  # Qt使用
+from viewforspider import Ui_spider_view  # 导入视图类
+from collections import Counter  # 实现dict的一个子类，方便计数。
+import requests  # 网页请求
 from requests import RequestException
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QApplication, QWidget
-from PyQt5.QtCore import QThread
-
+from PyQt5.QtWidgets import QApplication, QWidget  # Qt运行程序类 空间类
+from PyQt5.QtCore import QThread  # QT线程类，改善界面的流畅性。
+from PyQt5.QtCore import pyqtSignal
 
 # 热门 时间 评价
 addr = " "
@@ -37,49 +36,71 @@ url = [
        ]
 
 
-class spider(QThread):
+class spider(QThread):  # 创建爬虫类，继承于线程类。
 
     all_result = []
+    addr = " "
+    trigger = pyqtSignal(int)
+    end = pyqtSignal()
 
-    def __init__(self, addrs):
+    def __init__(self):
         super(spider, self).__init__()
-        self.addr = addrs
 
     def get_source(self, url):
+        #  异常处理
         try:
             response = requests.get(url)
-            if response.status_code == 200:
-                return response.text
+            if response.status_code == 200:  # 状态码，表示获取成功，服务器成功处理了请求。
+                return response.text  # 返回服务器返回的内容
             return None
-        except RequestException as e:
+        except RequestException as e:  # 如果请求失败，打印出失败的原因
             print(e)
             return None
 
-    def parse_source(self, content):
+    def parse_source(self, content): # 用于匹配抓取到的内容
         string = re.compile('<div.*?class.*?title="(.*?)">.*?<a.*?</a>.*?</div>', re.S)
         result = string.findall(content)
         return result
 
-    def run(self):
+    def run(self):  # 线程抓取前三页
         for i in range(3):
-            spider.all_result += self.parse_source(self.get_source(self.addr + str(30*i)))
+            self.trigger.emit(i)
+            spider.all_result += self.parse_source(self.get_source(spider.addr + str(30*i)))
 
-    def __del__(self):
+    def __del__(self):  # 析构函数
+        self.end.emit()
         self.exiting = True
         self.wait()
 
 
-class windows(Ui_spider_view, QWidget):
+class windows(Ui_spider_view, QWidget):  # 窗口界面类
     def __init__(self):
-        super(windows, self).__init__()
-        self.setupUi(self)
+        super(windows, self).__init__()  # 基类初始化
+        self.setupUi(self)  # UI界面设置
         self.openfile.setEnabled(False)
         self.guessyoulike.setEnabled(False)
+        self.savefile.setEnabled(False)
         self.textBrowser.setText("*********欢迎使用猫眼电影抓取*********")
         self.textBrowser.append("*********使用抓取自动保存文件*********")
         self.textBrowser.append("********使用提取则显示排序内容********")
+        self.spider_son = spider()
+        self.spider_son.trigger.connect(self.up_progress)
+        self.spider_son.trigger.connect(self.end_progress)
 
-    def execute(self):
+    def end_progress(self):
+        pass
+        # self.progressBar.setProperty("value", 0)
+
+    def up_progress(self, num):
+        print("here")
+        if num == 0:
+            self.progressBar.setProperty("value", 30)
+        elif num == 1:
+            self.progressBar.setProperty("value", 60)
+        elif num == 2:
+            self.progressBar.setProperty("value", 100)
+
+    def execute(self):  # 执行抓取按钮操作
         global addr
         if self.moviesclass.currentIndex() == 1 and self.sortclass.currentIndex() == 1:
             addr = url[0]  # 科幻热门
@@ -125,112 +146,114 @@ class windows(Ui_spider_view, QWidget):
             addr = url[20]  # 喜剧评价
         else:
             self.textBrowser.setText("!!!!!请选择电影类别和排序方法!!!!!")
-            return
+            return  # 如果不满足条件则退出
 
+        spider.addr = addr
         spider.all_result = []
-        spider_son = spider(addr)
-        spider_son.start()
+        self.spider_son.start()  # 启用爬虫线程
+        self.savefile.setEnabled(True)
+        return
 
-        while True:
-            if len(spider.all_result) == 90:
-                length = len(spider.all_result)
-                print("the content is:")
-                print(spider.all_result)
-                print("the length of the content is :" + str(length))
-                if self.moviesclass.currentIndex() == 1:
-                    with open('C:\\Users\\lijing\\Desktop\\嵌入式作业\\list1.txt', 'w', encoding='utf-8') as file:
-                        file.write("*************科幻电影*************" + "\n")
-                        if self.sortclass.currentIndex() == 1:
-                            file.write("***********按照热门排序:***********" + "\n")
-                        elif self.sortclass.currentIndex() == 2:
-                            file.write("***********按照时间排序:***********" + "\n")
-                        elif self.sortclass.currentIndex() == 3:
-                            file.write("***********按照评价排序:***********" + "\n")
-                        for i in range(length):
-                            file.write(str(i + 1) + ':' + spider.all_result[i] + '\n')
-                        file.close()
-                        self.textBrowser.setText("*********科幻类电影抓取完成********")
-                elif self.moviesclass.currentIndex() == 2:
-                    with open('C:\\Users\\lijing\\Desktop\\嵌入式作业\\list2.txt', 'w', encoding='utf-8') as file:
-                        file.write("*************动作电影*************" + "\n")
-                        if self.sortclass.currentIndex() == 1:
-                            file.write("***********按照热门排序:***********" + "\n")
-                        elif self.sortclass.currentIndex() == 2:
-                            file.write("***********按照时间排序:***********" + "\n")
-                        elif self.sortclass.currentIndex() == 3:
-                            file.write("***********按照评价排序:***********" + "\n")
-                        for i in range(length):
-                            file.write(str(i + 1) + ':' + spider.all_result[i] + '\n')
-                        file.close()
-                        self.textBrowser.setText("*********动作类电影抓取完成********")
-                elif self.moviesclass.currentIndex() == 3:
-                    with open('C:\\Users\\lijing\\Desktop\\嵌入式作业\\list3.txt', 'w', encoding='utf-8') as file:
-                        file.write("*************悬疑电影*************" + "\n")
-                        if self.sortclass.currentIndex() == 1:
-                            file.write("***********按照热门排序:***********" + "\n")
-                        elif self.sortclass.currentIndex() == 2:
-                            file.write("***********按照时间排序:***********" + "\n")
-                        elif self.sortclass.currentIndex() == 3:
-                            file.write("***********按照评价排序:***********" + "\n")
-                        for i in range(length):
-                            file.write(str(i + 1) + ':' + spider.all_result[i] + '\n')
-                        file.close()
-                        self.textBrowser.setText("*********悬疑类电影抓取完成********")
-                elif self.moviesclass.currentIndex() == 4:
-                    with open('C:\\Users\\lijing\\Desktop\\嵌入式作业\\list4.txt', 'w', encoding='utf-8') as file:
-                        file.write("*************冒险电影*************" + "\n")
-                        if self.sortclass.currentIndex() == 1:
-                            file.write("***********按照热门排序:***********" + "\n")
-                        elif self.sortclass.currentIndex() == 2:
-                            file.write("***********按照时间排序:***********" + "\n")
-                        elif self.sortclass.currentIndex() == 3:
-                            file.write("***********按照评价排序:***********" + "\n")
-                        for i in range(length):
-                            file.write(str(i + 1) + ':' + spider.all_result[i] + '\n')
-                        file.close()
-                        self.textBrowser.setText("*********冒险类电影抓取完成********")
-                elif self.moviesclass.currentIndex() == 5:
-                    with open('C:\\Users\\lijing\\Desktop\\嵌入式作业\\list5.txt', 'w', encoding='utf-8') as file:
-                        file.write("*************战争电影*************" + "\n")
-                        if self.sortclass.currentIndex() == 1:
-                            file.write("***********按照热门排序:***********" + "\n")
-                        elif self.sortclass.currentIndex() == 2:
-                            file.write("***********按照时间排序:***********" + "\n")
-                        elif self.sortclass.currentIndex() == 3:
-                            file.write("***********按照评价排序:***********" + "\n")
-                        for i in range(length):
-                            file.write(str(i + 1) + ':' + spider.all_result[i] + '\n')
-                        file.close()
-                        self.textBrowser.setText("*********战争类电影抓取完成********")
-                elif self.moviesclass.currentIndex() == 6:
-                    with open('C:\\Users\\lijing\\Desktop\\嵌入式作业\\list6.txt', 'w', encoding='utf-8') as file:
-                        file.write("*************奇幻电影*************" + "\n")
-                        if self.sortclass.currentIndex() == 1:
-                            file.write("***********按照热门排序:***********" + "\n")
-                        elif self.sortclass.currentIndex() == 2:
-                            file.write("***********按照时间排序:***********" + "\n")
-                        elif self.sortclass.currentIndex() == 3:
-                            file.write("***********按照评价排序:***********" + "\n")
-                        for i in range(length):
-                            file.write(str(i + 1) + ':' + spider.all_result[i] + '\n')
-                        file.close()
-                        self.textBrowser.setText("*********奇幻类电影抓取完成********")
-                elif self.moviesclass.currentIndex() == 7:
-                    with open('C:\\Users\\lijing\\Desktop\\嵌入式作业\\list7.txt', 'w', encoding='utf-8') as file:
-                        file.write("*************喜剧电影*************" + "\n")
-                        if self.sortclass.currentIndex() == 1:
-                            file.write("***********按照热门排序:***********" + "\n")
-                        elif self.sortclass.currentIndex() == 2:
-                            file.write("***********按照时间排序:***********" + "\n")
-                        elif self.sortclass.currentIndex() == 3:
-                            file.write("***********按照评价排序:***********" + "\n")
-                        for i in range(length):
-                            file.write(str(i + 1) + ':' + spider.all_result[i] + '\n')
-                        file.close()
-                        self.textBrowser.setText("*********喜剧类电影抓取完成********")
-                self.openfile.setEnabled(True)
-                self.guessyoulike.setEnabled(True)
-                return
+    def execute_save(self):
+        length = len(spider.all_result)
+        print("the content is:")
+        print(spider.all_result)
+        print("the length of the content is :" + str(length))
+        if self.moviesclass.currentIndex() == 1:
+            with open('C:\\Users\\lijing\\Desktop\\嵌入式作业\\list1.txt', 'w', encoding='utf-8') as file:
+                file.write("*************科幻电影*************" + "\n")
+                if self.sortclass.currentIndex() == 1:
+                    file.write("***********按照热门排序:***********" + "\n")
+                elif self.sortclass.currentIndex() == 2:
+                    file.write("***********按照时间排序:***********" + "\n")
+                elif self.sortclass.currentIndex() == 3:
+                    file.write("***********按照评价排序:***********" + "\n")
+                for i in range(length):
+                    file.write(str(i + 1) + ':' + spider.all_result[i] + '\n')
+                file.close()
+                self.textBrowser.setText("*********科幻类电影抓取完成********")
+        elif self.moviesclass.currentIndex() == 2:
+            with open('C:\\Users\\lijing\\Desktop\\嵌入式作业\\list2.txt', 'w', encoding='utf-8') as file:
+                file.write("*************动作电影*************" + "\n")
+                if self.sortclass.currentIndex() == 1:
+                    file.write("***********按照热门排序:***********" + "\n")
+                elif self.sortclass.currentIndex() == 2:
+                    file.write("***********按照时间排序:***********" + "\n")
+                elif self.sortclass.currentIndex() == 3:
+                    file.write("***********按照评价排序:***********" + "\n")
+                for i in range(length):
+                    file.write(str(i + 1) + ':' + spider.all_result[i] + '\n')
+                file.close()
+                self.textBrowser.setText("*********动作类电影抓取完成********")
+        elif self.moviesclass.currentIndex() == 3:
+            with open('C:\\Users\\lijing\\Desktop\\嵌入式作业\\list3.txt', 'w', encoding='utf-8') as file:
+                file.write("*************悬疑电影*************" + "\n")
+                if self.sortclass.currentIndex() == 1:
+                    file.write("***********按照热门排序:***********" + "\n")
+                elif self.sortclass.currentIndex() == 2:
+                    file.write("***********按照时间排序:***********" + "\n")
+                elif self.sortclass.currentIndex() == 3:
+                    file.write("***********按照评价排序:***********" + "\n")
+                for i in range(length):
+                    file.write(str(i + 1) + ':' + spider.all_result[i] + '\n')
+                file.close()
+                self.textBrowser.setText("*********悬疑类电影抓取完成********")
+        elif self.moviesclass.currentIndex() == 4:
+            with open('C:\\Users\\lijing\\Desktop\\嵌入式作业\\list4.txt', 'w', encoding='utf-8') as file:
+                file.write("*************冒险电影*************" + "\n")
+                if self.sortclass.currentIndex() == 1:
+                    file.write("***********按照热门排序:***********" + "\n")
+                elif self.sortclass.currentIndex() == 2:
+                    file.write("***********按照时间排序:***********" + "\n")
+                elif self.sortclass.currentIndex() == 3:
+                    file.write("***********按照评价排序:***********" + "\n")
+                for i in range(length):
+                    file.write(str(i + 1) + ':' + spider.all_result[i] + '\n')
+                file.close()
+                self.textBrowser.setText("*********冒险类电影抓取完成********")
+        elif self.moviesclass.currentIndex() == 5:
+            with open('C:\\Users\\lijing\\Desktop\\嵌入式作业\\list5.txt', 'w', encoding='utf-8') as file:
+                file.write("*************战争电影*************" + "\n")
+                if self.sortclass.currentIndex() == 1:
+                    file.write("***********按照热门排序:***********" + "\n")
+                elif self.sortclass.currentIndex() == 2:
+                    file.write("***********按照时间排序:***********" + "\n")
+                elif self.sortclass.currentIndex() == 3:
+                    file.write("***********按照评价排序:***********" + "\n")
+                for i in range(length):
+                    file.write(str(i + 1) + ':' + spider.all_result[i] + '\n')
+                file.close()
+                self.textBrowser.setText("*********战争类电影抓取完成********")
+        elif self.moviesclass.currentIndex() == 6:
+            with open('C:\\Users\\lijing\\Desktop\\嵌入式作业\\list6.txt', 'w', encoding='utf-8') as file:
+                file.write("*************奇幻电影*************" + "\n")
+                if self.sortclass.currentIndex() == 1:
+                    file.write("***********按照热门排序:***********" + "\n")
+                elif self.sortclass.currentIndex() == 2:
+                    file.write("***********按照时间排序:***********" + "\n")
+                elif self.sortclass.currentIndex() == 3:
+                    file.write("***********按照评价排序:***********" + "\n")
+                for i in range(length):
+                    file.write(str(i + 1) + ':' + spider.all_result[i] + '\n')
+                file.close()
+                self.textBrowser.setText("*********奇幻类电影抓取完成********")
+        elif self.moviesclass.currentIndex() == 7:
+            with open('C:\\Users\\lijing\\Desktop\\嵌入式作业\\list7.txt', 'w', encoding='utf-8') as file:
+                file.write("*************喜剧电影*************" + "\n")
+                if self.sortclass.currentIndex() == 1:
+                    file.write("***********按照热门排序:***********" + "\n")
+                elif self.sortclass.currentIndex() == 2:
+                    file.write("***********按照时间排序:***********" + "\n")
+                elif self.sortclass.currentIndex() == 3:
+                    file.write("***********按照评价排序:***********" + "\n")
+                for i in range(length):
+                    file.write(str(i + 1) + ':' + spider.all_result[i] + '\n')
+                file.close()
+                self.textBrowser.setText("*********喜剧类电影抓取完成********")
+        self.openfile.setEnabled(True)
+        self.guessyoulike.setEnabled(True)
+        self.savefile.setEnabled(False)
+        return
 
     def findyoulike(self):
         self.textBrowser.setText("********可能喜欢的电影：********")

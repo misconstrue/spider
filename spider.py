@@ -8,7 +8,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QApplication, QWidget  # Qt运行程序类 空间类
 from PyQt5.QtCore import QThread  # QT线程类，改善界面的流畅性。
 from PyQt5.QtCore import pyqtSignal
-
+import os
 # 热门 时间 评价
 addr = " "
 url = [
@@ -154,7 +154,7 @@ class windows(Ui_spider_view, QWidget):  # 窗口界面类
         print(spider.all_result)
         print("the length of the content is :" + str(length))
         if self.moviesclass.currentIndex() == 1:
-            with open('C:\\Users\\lijing\\Desktop\\Spider_dir\\text1.txt', 'w', encoding='utf-8') as file:
+            with open('text1.txt', 'w', encoding='utf-8') as file:
                 file.write("*************科幻电影*************" + "\n")
                 if self.sortclass.currentIndex() == 1:
                     file.write("***********按照热门排序:***********" + "\n")
@@ -167,7 +167,7 @@ class windows(Ui_spider_view, QWidget):  # 窗口界面类
                 file.close()
                 self.textBrowser.setText("*********科幻类电影抓取完成********")
         elif self.moviesclass.currentIndex() == 2:
-            with open('C:\\Users\\lijing\\Desktop\\Spider_dir\\text2.txt', 'w', encoding='utf-8') as file:
+            with open('text2.txt', 'w', encoding='utf-8') as file:
                 file.write("*************动作电影*************" + "\n")
                 if self.sortclass.currentIndex() == 1:
                     file.write("***********按照热门排序:***********" + "\n")
@@ -180,7 +180,7 @@ class windows(Ui_spider_view, QWidget):  # 窗口界面类
                 file.close()
                 self.textBrowser.setText("*********动作类电影抓取完成********")
         elif self.moviesclass.currentIndex() == 3:
-            with open('C:\\Users\\lijing\\Desktop\\Spider_dir\\text3.txt', 'w', encoding='utf-8') as file:
+            with open('text3.txt', 'w', encoding='utf-8') as file:
                 file.write("*************悬疑电影*************" + "\n")
                 if self.sortclass.currentIndex() == 1:
                     file.write("***********按照热门排序:***********" + "\n")
@@ -193,7 +193,7 @@ class windows(Ui_spider_view, QWidget):  # 窗口界面类
                 file.close()
                 self.textBrowser.setText("*********悬疑类电影抓取完成********")
         elif self.moviesclass.currentIndex() == 4:
-            with open('C:\\Users\\lijing\\Desktop\\Spider_dir\\text4.txt', 'w', encoding='utf-8') as file:
+            with open('text4.txt', 'w', encoding='utf-8') as file:
                 file.write("*************冒险电影*************" + "\n")
                 if self.sortclass.currentIndex() == 1:
                     file.write("***********按照热门排序:***********" + "\n")
@@ -206,7 +206,7 @@ class windows(Ui_spider_view, QWidget):  # 窗口界面类
                 file.close()
                 self.textBrowser.setText("*********冒险类电影抓取完成********")
         elif self.moviesclass.currentIndex() == 5:
-            with open('C:\\Users\\lijing\\Desktop\\Spider_dir\\text5.txt', 'w', encoding='utf-8') as file:
+            with open('text5.txt', 'w', encoding='utf-8') as file:
                 file.write("*************战争电影*************" + "\n")
                 if self.sortclass.currentIndex() == 1:
                     file.write("***********按照热门排序:***********" + "\n")
@@ -219,7 +219,7 @@ class windows(Ui_spider_view, QWidget):  # 窗口界面类
                 file.close()
                 self.textBrowser.setText("*********战争类电影抓取完成********")
         elif self.moviesclass.currentIndex() == 6:
-            with open('C:\\Users\\lijing\\Desktop\\Spider_dir\\text6.txt', 'w', encoding='utf-8') as file:
+            with open('text6.txt', 'w', encoding='utf-8') as file:
                 file.write("*************奇幻电影*************" + "\n")
                 if self.sortclass.currentIndex() == 1:
                     file.write("***********按照热门排序:***********" + "\n")
@@ -232,7 +232,7 @@ class windows(Ui_spider_view, QWidget):  # 窗口界面类
                 file.close()
                 self.textBrowser.setText("*********奇幻类电影抓取完成********")
         elif self.moviesclass.currentIndex() == 7:
-            with open('C:\\Users\\lijing\\Desktop\\Spider_dir\\text7.txt', 'w', encoding='utf-8') as file:
+            with open('text7.txt', 'w', encoding='utf-8') as file:
                 file.write("*************喜剧电影*************" + "\n")
                 if self.sortclass.currentIndex() == 1:
                     file.write("***********按照热门排序:***********" + "\n")
@@ -252,7 +252,7 @@ class windows(Ui_spider_view, QWidget):  # 窗口界面类
     def findyoulike(self):
         self.textBrowser.setText("********可能喜欢的电影：********")
         all_movies = []
-        with open('C:\\Users\\lijing\\Desktop\\Spider_dir\\text1.txt', 'r', encoding='utf-8') as file:
+        with open('text1.txt', 'r', encoding='utf-8') as file:
             file.seek(83, 0)
             tmp = file.readlines()
             j = 0
@@ -263,7 +263,7 @@ class windows(Ui_spider_view, QWidget):  # 窗口界面类
                 else:
                     all_movies.append(i[2:-1])
         file.close()
-        with open('C:\\Users\\lijing\\Desktop\\Spider_dir\\text2.txt', 'r', encoding='utf-8') as file:
+        with open('text2.txt', 'r', encoding='utf-8') as file:
             file.seek(83, 0)
             tmp = file.readlines()
             j = 0
@@ -274,7 +274,7 @@ class windows(Ui_spider_view, QWidget):  # 窗口界面类
                 else:
                     all_movies.append(i[2:-1])
         file.close()
-        with open('C:\\Users\\lijing\\Desktop\\Spider_dir\\text3.txt', 'r', encoding='utf-8') as file:
+        with open('text3.txt', 'r', encoding='utf-8') as file:
             file.seek(83, 0)
             tmp = file.readlines()
             j = 0
@@ -285,7 +285,7 @@ class windows(Ui_spider_view, QWidget):  # 窗口界面类
                 else:
                     all_movies.append(i[2:-1])
         file.close()
-        with open('C:\\Users\\lijing\\Desktop\\Spider_dir\\text4.txt', 'r', encoding='utf-8') as file:
+        with open('text4.txt', 'r', encoding='utf-8') as file:
             file.seek(83, 0)
             tmp = file.readlines()
             j = 0
@@ -296,7 +296,7 @@ class windows(Ui_spider_view, QWidget):  # 窗口界面类
                 else:
                     all_movies.append(i[2:-1])
         file.close()
-        with open('C:\\Users\\lijing\\Desktop\\Spider_dir\\text5.txt', 'r', encoding='utf-8') as file:
+        with open('text5.txt', 'r', encoding='utf-8') as file:
             file.seek(83, 0)
             tmp = file.readlines()
             j = 0
@@ -307,7 +307,7 @@ class windows(Ui_spider_view, QWidget):  # 窗口界面类
                 else:
                     all_movies.append(i[2:-1])
         file.close()
-        with open('C:\\Users\\lijing\\Desktop\\Spider_dir\\text6.txt', 'r', encoding='utf-8') as file:
+        with open('text6.txt', 'r', encoding='utf-8') as file:
             file.seek(83, 0)
             tmp = file.readlines()
             j = 0
@@ -318,7 +318,7 @@ class windows(Ui_spider_view, QWidget):  # 窗口界面类
                 else:
                     all_movies.append(i[2:-1])
         file.close()
-        with open('C:\\Users\\lijing\\Desktop\\Spider_dir\\text7.txt', 'r', encoding='utf-8') as file:
+        with open('text7.txt', 'r', encoding='utf-8') as file:
             file.seek(83, 0)
             tmp = file.readlines()
             j = 0
@@ -342,43 +342,43 @@ class windows(Ui_spider_view, QWidget):  # 窗口界面类
     def open_file(self):
         self.textBrowser.setText(" ")
         if self.moviesclass.currentIndex() == 1:
-            with open('C:\\Users\\lijing\\Desktop\\Spider_dir\\text1.txt', 'r', encoding='utf-8') as fl:
+            with open('text1.txt', 'r', encoding='utf-8') as fl:
                 data = fl.readlines()
                 for list in data:
                     self.textBrowser.append(list)
             fl.close()
         elif self.moviesclass.currentIndex() == 2:
-            with open('C:\\Users\\lijing\\Desktop\\Spider_dir\\text2.txt', 'r', encoding='utf-8') as fl:
+            with open('text2.txt', 'r', encoding='utf-8') as fl:
                 data = fl.readlines()
                 for list in data:
                     self.textBrowser.append(list)
             fl.close()
         elif self.moviesclass.currentIndex() == 3:
-            with open('C:\\Users\\lijing\\Desktop\\Spider_dir\\text3.txt', 'r', encoding='utf-8') as fl:
+            with open('text3.txt', 'r', encoding='utf-8') as fl:
                 data = fl.readlines()
                 for list in data:
                     self.textBrowser.append(list)
             fl.close()
         elif self.moviesclass.currentIndex() == 4:
-            with open('C:\\Users\\lijing\\Desktop\\Spider_dir\\text4.txt', 'r', encoding='utf-8') as fl:
+            with open('text4.txt', 'r', encoding='utf-8') as fl:
                 data = fl.readlines()
                 for list in data:
                     self.textBrowser.append(list)
             fl.close()
         elif self.moviesclass.currentIndex() == 5:
-            with open('C:\\Users\\lijing\\Desktop\\Spider_dir\\text5.txt', 'r', encoding='utf-8') as fl:
+            with open('text5.txt', 'r', encoding='utf-8') as fl:
                 data = fl.readlines()
                 for list in data:
                     self.textBrowser.append(list)
             fl.close()
         elif self.moviesclass.currentIndex() == 6:
-            with open('C:\\Users\\lijing\\Desktop\\Spider_dir\\text6.txt', 'r', encoding='utf-8') as fl:
+            with open('text6.txt', 'r', encoding='utf-8') as fl:
                 data = fl.readlines()
                 for list in data:
                     self.textBrowser.append(list)
             fl.close()
         elif self.moviesclass.currentIndex() == 7:
-            with open('C:\\Users\\lijing\\Desktop\\Spider_dir\\text7.txt', 'r', encoding='utf-8') as fl:
+            with open('text7.txt', 'r', encoding='utf-8') as fl:
                 data = fl.readlines()
                 for list in data:
                     self.textBrowser.append(list)
@@ -387,6 +387,14 @@ class windows(Ui_spider_view, QWidget):  # 窗口界面类
         return
 
 def main():
+    open('text1.txt', 'w', encoding='utf-8')
+    open('text2.txt', 'w', encoding='utf-8')
+    open('text3.txt', 'w', encoding='utf-8')
+    open('text4.txt', 'w', encoding='utf-8')
+    open('text5.txt', 'w', encoding='utf-8')
+    open('text6.txt', 'w', encoding='utf-8')
+    open('text7.txt', 'w', encoding='utf-8')
+
     app = QApplication(sys.argv)
     main_window = windows()
     main_window.show()
